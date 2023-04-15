@@ -28,7 +28,7 @@ async def create_question(question_create: QuestionCreate) -> QuestionData:
 
 
 async def update_question(question_id: int,
-                         question_update: QuestionUpdate) -> QuestionData:
+                          question_update: QuestionUpdate) -> QuestionData:
     """Update question."""
     question = await crud_questions.update(question_id, question_update)
 

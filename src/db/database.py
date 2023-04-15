@@ -1,11 +1,11 @@
 from tortoise import Tortoise
 from src.core.config import settings
 
-MODELS_LIST = ["src.models.accounts"]
+MODELS_LIST = ["src.models.questions"]
 
-async def sqlite_db_init() -> None:
+async def postgres_db_init() -> None:
     await Tortoise.init(
-        db_url=settings.SQLITE_URI,
+        db_url=settings.POSTGRES_URI,
         modules={'models': MODELS_LIST}
     )
 

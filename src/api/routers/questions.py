@@ -1,25 +1,80 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, status
+
+from src.api.const import USER_BASE_RESPONSES
+from src.enums.base import BaseMessage
+from src.enums.errors import QuestionErrors
 from src.logic import service_questions
-from src.schemas.questions import QuestionCreate, QuestionUpdate
+from src.schemas.questions import QuestionCreate, QuestionData, QuestionUpdate
+from src.schemas.base import MessageErrorSchema
 
-app = FastAPI()
+from src.logger import get_logger
 
+logger = get_logger()
 
-@app.get("/getQuestionById/{id}")
-async def get_question_by_id(id: int):
-    return service_questions.get_question_by_id(id)
-
-
-@app.post("/createQuestion")
-async def create_question(question_create: QuestionCreate):
-    return service_questions.create_question(question_create)
+app = APIRouter()
 
 
-@app.put("/updateQuestion")
-async def update_question(question_id: int, question_update: QuestionUpdate):
-    return service_questions.update_question(question_id, question_update)
+@app.get(
+    "/getQuestionById/{question_id}",
+    summary='Get question by id',
+    status_code=status.HTTP_200_OK,
+    response_model=QuestionData,
+    responses={
+        **USER_BASE_RESPONSES,
+        status.HTTP_200_OK: {"description": BaseMessage.obj_data.value},
+        status.HTTP_404_NOT_FOUND: {
+            "model": MessageErrorSchema,
+            "description": QuestionErrors.question_not_found.docs_response
+        },
+    }
+)
+async def get_question_by_id(question_id: int):
+    return await service_questions.get_question_by_id(question_id)
 
 
-@app.delete("/deleteQuestion")
+@app.post("/createQuestion",
+          summary='Create question',
+          status_code=status.HTTP_201_CREATED,
+          response_model=QuestionData,
+          responses={
+              status.HTTP_201_CREATED: {
+                  "description": BaseMessage.obj_is_created.value}
+          },
+          )
+async def create_question(question_create: QuestionCreate) -> QuestionData:
+    logger.debug(f"Create question: {question_create}")
+    return await service_questions.create_question(question_create)
+
+
+@app.post("/updateQuestion",
+         summary='Update question',
+         status_code=status.HTTP_200_OK,
+         response_model=QuestionData,
+         responses={
+             status.HTTP_200_OK: {
+                 "description": BaseMessage.obj_is_created.value},
+             status.HTTP_404_NOT_FOUND: {
+                 "model": MessageErrorSchema,
+                 "description": QuestionErrors.question_not_found.docs_response
+             }
+         },
+         )
+async def update_question(question_id: int, question_update: QuestionUpdate) \
+        -> QuestionData:
+    return await service_questions.update_question(question_id, question_update)
+
+
+@app.delete("/deleteQuestion",
+            summary='Delete question',
+            status_code=status.HTTP_200_OK,
+            responses={
+                status.HTTP_200_OK: {
+                    "description": BaseMessage.obj_is_created.value},
+                status.HTTP_404_NOT_FOUND: {
+                    "model": MessageErrorSchema,
+                    "description": QuestionErrors.question_not_found.docs_response
+                }
+            },
+            )
 async def delete_question(question_id: int):
     await service_questions.delete_question(question_id)

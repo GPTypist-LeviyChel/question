@@ -15,12 +15,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get(self, object_id: int) -> Optional[ModelType]:
         return await self.model.get_or_none(id=object_id)
 
-    async def update(self, data: UpdateSchemaType) -> None:
-        object_model = await self.model.filter(id=data.id).first()
-        for key, value in data.updated_fields.items():
+    async def update(self, object_id: int, data: UpdateSchemaType) -> None:
+        object_model = await self.model.filter(id=object_id).first()
+        for key, value in data.dict().items():
             setattr(object_model, key, value)
 
-        await object_model.save(update_fields=data.updated_fields.keys())
+        await object_model.save(update_fields=data.dict().keys())
+        return await self.model.filter(id=object_id).first()
 
     async def remove(self, object_id: int) -> None:
         await self.model.filter(id=object_id).delete()
