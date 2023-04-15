@@ -32,6 +32,18 @@ async def get_question_by_id(question_id: int):
     return await service_questions.get_question_by_id(question_id)
 
 
+@app.get('/getQuestions/{count}',
+            summary='Get questions',
+            status_code=status.HTTP_200_OK,
+            response_model=list[QuestionData],
+            responses={
+                **USER_BASE_RESPONSES,
+                status.HTTP_200_OK: {"description": BaseMessage.obj_data.value},
+            }
+            )
+async def get_questions(count: int):
+    return await service_questions.get_list_question(count)
+
 @app.post("/createQuestion",
           summary='Create question',
           status_code=status.HTTP_201_CREATED,
@@ -42,7 +54,6 @@ async def get_question_by_id(question_id: int):
           },
           )
 async def create_question(question_create: QuestionCreate) -> QuestionData:
-    logger.debug(f"Create question: {question_create}")
     return await service_questions.create_question(question_create)
 
 

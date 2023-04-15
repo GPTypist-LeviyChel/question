@@ -35,9 +35,9 @@ async def update_question(question_id: int,
     return serialize_question.prepare_question_data(question)
 
 
-async def get_list_question() -> List[QuestionData]:
+async def get_list_question(count: int) -> List[QuestionData]:
     """Get list question."""
-    questions = await crud_questions.get_list()
+    questions = await crud_questions.get_list(count)
 
     return [serialize_question.prepare_question_data(question)
             for question in questions]
