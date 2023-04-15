@@ -1,4 +1,6 @@
+import os
 from src.db.settings import PostgresDBSettings
+
 
 configs = [PostgresDBSettings]
 
@@ -8,3 +10,8 @@ class Settings(*configs):
 
 
 settings = Settings()
+db_url = os.getenv("DB_URL")
+db_user = os.getenv("DB_USER")
+db_password = os.getenv("DB_PASSWORD")
+
+
