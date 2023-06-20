@@ -1,0 +1,8 @@
+services:
+  questions_api:
+    build: .
+    container_name: questions_api
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"

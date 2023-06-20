@@ -1,4 +1,5 @@
 from typing import TypeVar
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -7,7 +8,7 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
 
 class UpdatedBase(BaseModel):
-    id: int
+    id: UUID
     updated_fields: dict
 
 

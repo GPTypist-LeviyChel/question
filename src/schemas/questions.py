@@ -1,12 +1,15 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from typing import Optional
+from uuid import UUID
+
+from pydantic import BaseModel, Field, HttpUrl
 from src.enums.topic import QuestionTopic
 
 
 class QuestionBase(BaseModel):
     text: str = Field(min_length=1, max_length=500)
     topic: QuestionTopic
-    image_url: str = Field(min_length=1, max_length=500, null=True)
+    image_url: Optional[HttpUrl] = None
 
 
 class QuestionCreate(QuestionBase):
@@ -14,11 +17,13 @@ class QuestionCreate(QuestionBase):
 
 
 class QuestionUpdate(QuestionBase):
-    pass
+    text: Optional[str] = Field(min_length=1, max_length=500)
+    topic: Optional[QuestionTopic]
+    image_url: Optional[HttpUrl]
 
 
 class QuestionData(QuestionBase):
-    id: int
+    id: UUID
     created_at: datetime
 
     class Config:

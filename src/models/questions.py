@@ -3,7 +3,7 @@ from src.enums.topic import QuestionTopic
 
 
 class Question(models.Model):
-    id = fields.IntField(pk=True)
+    id = fields.UUIDField(pk=True)
     topic = fields.CharEnumField(QuestionTopic, max_length=20, null=False)
     text = fields.TextField(max_length=500, null=False)
     image_url = fields.TextField(max_length=500, null=True)

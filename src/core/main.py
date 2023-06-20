@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.core import middleware
@@ -12,8 +13,9 @@ logger = get_logger()
 
 app = FastAPI(
     version='2.0',
-    docs_url='/api/docs',
-    openapi_url='/api/openapi.json',
+    docs_url='/questions/docs',
+    openapi_url='/questions/openapi.json',
+    openapi_prefix='/api',
     middleware=middleware.utils
 )
 

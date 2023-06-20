@@ -1,4 +1,5 @@
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi import HTTPException, status
 
@@ -8,9 +9,9 @@ from src.enums.errors import QuestionErrors
 from src.serializer import serialize_question
 
 
-async def get_question_by_id(account_id: int) -> Optional[QuestionData]:
+async def get_question_by_id(question_id: UUID) -> Optional[QuestionData]:
     """Get question by id."""
-    question = await crud_questions.get(account_id)
+    question = await crud_questions.get(question_id)
     if question is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -27,7 +28,7 @@ async def create_question(question_create: QuestionCreate) -> QuestionData:
     return serialize_question.prepare_question_data(question)
 
 
-async def update_question(question_id: int,
+async def update_question(question_id: UUID,
                           question_update: QuestionUpdate) -> QuestionData:
     """Update question."""
     question = await crud_questions.update(question_id, question_update)
@@ -43,6 +44,6 @@ async def get_list_question(count: int) -> List[QuestionData]:
             for question in questions]
 
 
-async def delete_question(question_id: int) -> None:
+async def delete_question(question_id: UUID) -> None:
     """Delete question."""
     await crud_questions.remove(question_id)

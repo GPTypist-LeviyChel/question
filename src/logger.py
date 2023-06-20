@@ -1,7 +1,7 @@
 from structlog import getLogger
 
 
-def get_logger(context: dict = None):  # type:ignore
+def get_logger(context: dict = None):
     logger = getLogger()
 
     if context:
